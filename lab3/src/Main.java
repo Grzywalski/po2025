@@ -27,12 +27,11 @@ public class Main {
     }
 
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
 
-        System.out.println(sleepIn(true,false));
-
-        System.out.println(monkeyTrouble(true,true));
-
-        System.out.println(sumDouble(3,3));
+        Main m = new Main();
+        System.out.println(m.sleepIn(true, false));
+        System.out.println(m.monkeyTrouble(true, true));
+        System.out.println(m.sumDouble(3, 3));
         }
     }

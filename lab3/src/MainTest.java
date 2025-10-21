@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 public class MainTest {
-
+    Main Main = new Main();
     @org.junit.Test
     public void sleepIn() {
         System.out.println(Main.sleepIn(false,true));
