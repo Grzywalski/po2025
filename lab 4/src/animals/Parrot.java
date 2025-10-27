@@ -7,4 +7,7 @@ public class Parrot extends Animal {
     public String getDescription() {
         return "papuga";
     }
+    public Integer getNogi() {
+        return IloscNog;
+    }
 }

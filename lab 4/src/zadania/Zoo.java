@@ -25,10 +25,19 @@ public class Zoo {
             System.out.println(animals[i].getDescription());
         }
     }
+    public void IleNog(){
+        Integer suma = 0;
+        for (int i =0;i< animals.length;i++){
+            suma = suma + animals[i].getNogi();
+        }
+        System.out.println("suma nog:" + suma);
+    }
 }
+
  class Main {
     public static void main(String[] args) {
         Zoo zoo = new Zoo();
         zoo.stworzZoo();
+        zoo.IleNog();
     }
 }

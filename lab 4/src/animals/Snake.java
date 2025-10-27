@@ -9,4 +9,7 @@ public class Snake extends Animal{
     public String getDescription() {
         return "waz";
     }
+    public Integer getNogi() {
+        return IloscNog;
+    }
 }

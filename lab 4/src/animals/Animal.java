@@ -5,5 +5,7 @@ public abstract class Animal {
     protected Integer IloscNog;
 
     public abstract String getDescription();
+
+    public abstract Integer getNogi();
 }
 
