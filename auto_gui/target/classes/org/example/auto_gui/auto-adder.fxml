@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.auto_gui.carAddControler"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <VBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+        <Label text="Wprowadź Nowy Samochód" style="-fx-font-size: 16pt; -fx-font-weight: bold;"/>
+
+        <TextField fx:id="inputNazwa" promptText="Nazwa (np. Toyota Corolla)"/>
+        <TextField fx:id="inputMaxBiegi" promptText="Liczba Biegów (np. 6)"/>
+
+        <Label fx:id="id" text="1" style="-fx-text-fill: red;"/>
+
+        <HBox alignment="CENTER" spacing="10.0">
+            <Button text="Dodaj Samochód" fx:id="btnAutoAdd" onAction="#handleAddCar"/>
+            <Button text="Anuluj" fx:id="btnAnuluj" onAction="#handleCancel"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

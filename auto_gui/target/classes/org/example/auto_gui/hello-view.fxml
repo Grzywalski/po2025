@@ -15,22 +15,22 @@
                 <Label text="PARAMETRY AUTA" style="-fx-font-size:18; -fx-font-weight:bold;"/>
 
                 <Label text="Nazwa:" />
-                <TextField fx:id="tfNazwa" />
+                <TextField fx:id="tfNazwa" editable="false" />
 
                 <Label text="Ilość biegów:" />
-                <TextField fx:id="tfIloscBiegow" />
+                <TextField fx:id="tfIloscBiegow" editable="false" />
 
                 <Label text="Aktualny bieg:" />
-                <TextField fx:id="tfAktualnyBieg" />
+                <TextField fx:id="tfAktualnyBieg" editable="false" />
 
                 <Label text="Obroty silnika:" />
-                <TextField fx:id="tfObrotySilnika" />
+                <TextField fx:id="tfObrotySilnika" editable="false" />
 
                 <Separator />
                 <Label text="STEROWANIE" style="-fx-font-size:16; -fx-font-weight:bold;"/>
 
                 <HBox spacing="10">
-                    <Button text="Zwiększ bieg" fx:id="btnZwiekszBieg" />
+                    <Button text="Zwiększ bieg" fx:id="btnZwiekszBieg" onAction="#onZwiekszBieg"/>
                     <Button text="Zmniejsz bieg" fx:id="btnZmniejszBieg" />
                 </HBox>
 
@@ -60,23 +60,17 @@
 
             <Label text="Wybierz obiekt:" />
             <ComboBox fx:id="comboSamochody" prefWidth="220" />
+            <Button text="dodaj auto" fx:id="btnDodajAuto" onAction="#onDodajAuto"/>
         </HBox>
     </top>
 
     <!-- Prawa strona: duża plansza pod wizualizację -->
-    <right>
+    <center>
         <VBox BorderPane.alignment="CENTER" spacing="10">
             <padding><Insets top="10" left="10" right="10" bottom="10"/></padding>
             <Label text="PLANSZA OBIEKTÓW" style="-fx-font-size:18; -fx-font-weight:bold;"/>
             <Pane fx:id="canvasPane" prefWidth="500" prefHeight="600" style="-fx-border-color: gray; -fx-border-width: 2; -fx-background-color: #f0f0f0;" />
         </VBox>
-    </right>
-
-    <!-- Centrum: opcjonalne miejsce na późniejszy podgląd -->
-    <center>
-        <StackPane>
-            <Label text="Podgląd dodatkowy" style="-fx-font-size:16; -fx-text-fill:gray;" />
-        </StackPane>
     </center>
 
 </BorderPane>

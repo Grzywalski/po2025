@@ -1,7 +1,13 @@
 package org.example.auto_gui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader; // POTRZEBNY DO ŁADOWANIA FXML
+import javafx.scene.Scene;     // POTRZEBNY DO TWORZENIA SCENY W NOWYM OKNIE
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane; // POTRZEBNY DO KONTENERA ROOT
+import javafx.stage.Stage;     // POTRZEBNY DO TWORZENIA NOWEGO OKNA
 
 public class HelloController {
 
@@ -19,21 +25,21 @@ public class HelloController {
     @FXML private Button btnWylaczSilnik;
     @FXML private Button btnWlaczAuto;
     @FXML private Button btnWylaczAuto;
-
+    @FXML private Button btnDodajAuto;
     @FXML private ComboBox<String> comboSamochody;
 
 
 
-    // --------- PRZYKŁADOWE PUSTE METODY ----------
+
 
     @FXML
     private void initialize() {
         System.out.println("FXML został poprawnie wczytany.");
-        comboSamochody.getItems().addAll("Auto 1", "Auto 2", "Auto 3");
+        comboSamochody.getItems().addAll();
     }
 
     @FXML
-    private void onZwiekszBieg() {
+    public void onZwiekszBieg() {
         System.out.println("Zwiększ bieg");
     }
 
@@ -71,4 +77,37 @@ public class HelloController {
     private void onWylaczAuto() {
         System.out.println("Auto wyłączone");
     }
+    @FXML
+    private void onDodajAuto() {
+        try {
+            // Użycie FXMLLoader do załadowania nowego ekranu z pliku .fxml
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("auto-adder.fxml"));
+
+            // Załadowanie widoku do Parent
+            AnchorPane root = fxmlLoader.load();
+
+            // Klasa Stage jako nowe okno
+            Stage stage = new Stage();
+            stage.setTitle("Dodawanie Samochodu");
+            stage.setScene(new Scene(root));
+
+            // Opcjonalnie: Ustawienie modalności (blokuje interakcję z głównym oknem)
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+            stage.showAndWait(); // Pokazanie okna i czekanie na jego zamknięcie
+
+            // Opcjonalnie: Odświeżenie comboSamochody po powrocie z okna
+            // (Wymagałoby to przekazania referencji lub użycia wzorca Observer)
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Opcjonalny komunikat błędu dla użytkownika
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Błąd");
+            alert.setHeaderText("Nie można załadować formularza.");
+            alert.setContentText("Sprawdź, czy plik data-input-view.fxml istnieje.");
+            alert.showAndWait();
+        }
+    }
 }
+
