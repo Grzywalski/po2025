@@ -6,7 +6,6 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.auto_gui.HelloController">
 
-    <!-- Lewy panel: ustawienia silnika, skrzyni, auta -->
     <left>
         <ScrollPane fitToWidth="true">
             <VBox spacing="12" BorderPane.alignment="TOP_LEFT" >
@@ -31,29 +30,28 @@
 
                 <HBox spacing="10">
                     <Button text="Zwiększ bieg" fx:id="btnZwiekszBieg" onAction="#onZwiekszBieg"/>
-                    <Button text="Zmniejsz bieg" fx:id="btnZmniejszBieg" />
+                    <Button text="Zmniejsz bieg" fx:id="btnZmniejszBieg" onAction="#onZmniejszBieg"/>
                 </HBox>
 
                 <HBox spacing="10">
-                    <Button text="Wciśnij sprzęgło" fx:id="btnWcisnijSprzeglo" />
-                    <Button text="Zwolnij sprzęgło" fx:id="btnZwolnijSprzeglo" />
+                    <Button text="Wciśnij sprzęgło" fx:id="btnWcisnijSprzeglo" onAction="#onWcisnijSprzeglo"/>
+                    <Button text="Zwolnij sprzęgło" fx:id="btnZwolnijSprzeglo" onAction="#onZwolnijSprzeglo"/>
                 </HBox>
 
                 <HBox spacing="10">
-                    <Button text="Włącz silnik" fx:id="btnWlaczSilnik" />
-                    <Button text="Wyłącz silnik" fx:id="btnWylaczSilnik" />
+                    <Button text="Włącz silnik" fx:id="btnWlaczSilnik" onAction="#onWlaczSilnik"/>
+                    <Button text="Wyłącz silnik" fx:id="btnWylaczSilnik" onAction="#onWylaczSilnik"/>
                 </HBox>
 
                 <HBox spacing="10">
-                    <Button text="Włącz auto" fx:id="btnWlaczAuto" />
-                    <Button text="Wyłącz auto" fx:id="btnWylaczAuto" />
+                    <Button text="Włącz auto" fx:id="btnWlaczAuto" onAction="#onWlaczAuto"/>
+                    <Button text="Wyłącz auto" fx:id="btnWylaczAuto" onAction="#onWylaczAuto"/>
                 </HBox>
 
             </VBox>
         </ScrollPane>
     </left>
 
-    <!-- Góra: lista aut -->
     <top>
         <HBox spacing="15" BorderPane.alignment="CENTER_RIGHT">
             <padding><Insets top="10" left="10" right="10" bottom="10"/></padding>
@@ -64,7 +62,6 @@
         </HBox>
     </top>
 
-    <!-- Prawa strona: duża plansza pod wizualizację -->
     <center>
         <VBox BorderPane.alignment="CENTER" spacing="10">
             <padding><Insets top="10" left="10" right="10" bottom="10"/></padding>

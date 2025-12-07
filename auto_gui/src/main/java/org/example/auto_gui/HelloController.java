@@ -2,21 +2,30 @@ package org.example.auto_gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import org.example.auto_gui.carAddControler;
 import javafx.scene.control.*;
-import javafx.fxml.FXMLLoader; // POTRZEBNY DO ŁADOWANIA FXML
-import javafx.scene.Scene;     // POTRZEBNY DO TWORZENIA SCENY W NOWYM OKNIE
-import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane; // POTRZEBNY DO KONTENERA ROOT
-import javafx.stage.Stage;     // POTRZEBNY DO TWORZENIA NOWEGO OKNA
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HelloController {
+    @FXML private Pane canvasPane;
 
-    // Pola z FXML
+    private Image carImage;
+
+    private final List<Samochod> listaSamochodow = new ArrayList<>();
+    private Samochod aktualneAuto;
+
     @FXML private TextField tfNazwa;
     @FXML private TextField tfIloscBiegow;
     @FXML private TextField tfAktualnyBieg;
     @FXML private TextField tfObrotySilnika;
-
     @FXML private Button btnZwiekszBieg;
     @FXML private Button btnZmniejszBieg;
     @FXML private Button btnWcisnijSprzeglo;
@@ -26,88 +35,157 @@ public class HelloController {
     @FXML private Button btnWlaczAuto;
     @FXML private Button btnWylaczAuto;
     @FXML private Button btnDodajAuto;
-    @FXML private ComboBox<String> comboSamochody;
+
+    @FXML private ComboBox<Samochod> comboSamochody;
+    @FXML
+    private void initialize() {
+        System.out.println("FXML został poprawnie wczytany.");
+
+        comboSamochody.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+
+            if (oldVal != null) {
+
+                oldVal.widokSamochodu.setStyle("-fx-border-color: gray; -fx-border-width: 1;");
+            }
 
 
+            if (newVal != null) {
+                aktualneAuto = newVal;
+                newVal.widokSamochodu.setStyle("-fx-border-color: gold; -fx-border-width: 3;");
+                newVal.widokSamochodu.setVisible(true);
+
+                wyswietlDaneAuta(aktualneAuto);
+            }
+        });
+
+        Samochod domyslneAuto = new Samochod("Domyślna Toyota", 5);
+        dodajAutoDoListy(domyslneAuto);
+        comboSamochody.getSelectionModel().selectFirst();
+        try {
+            carImage = new Image(HelloApplication.class.getResource("car.png").toExternalForm());
+        } catch (Exception e) {
+            System.err.println("Błąd ładowania obrazu car.jpg: " + e.getMessage());
+            carImage = null;
+        }
+    }
+
+    private void dodajAutoDoListy(Samochod auto) {
+        listaSamochodow.add(auto);
+        comboSamochody.getItems().add(auto);
+        if (canvasPane != null && auto.widokSamochodu != null) {
+            canvasPane.getChildren().add(auto.widokSamochodu);
+            auto.widokSamochodu.setVisible(true);
+        }
+    }
+    private void wyswietlDaneAuta(Samochod auto) {
+        if (auto != null) {
+            tfNazwa.setText(auto.getNazwa());
+            tfIloscBiegow.setText(String.valueOf(auto.getSkrzynia().getIloscBiegow()));
+            tfAktualnyBieg.setText(String.valueOf(auto.getSkrzynia().getAktualnyBieg()));
+            tfObrotySilnika.setText(String.valueOf(auto.getSilnik().getObroty()));
+            btnWcisnijSprzeglo.setText(auto.getSprzeglo().isWcisniete() ? "Sprzęgło (WCIŚNIĘTE)" : "Wciśnij Sprzęgło");
+            btnWlaczSilnik.setText(auto.getSilnik().isWlaczony() ? "Silnik (WŁĄCZONY)" : "Włącz Silnik");
+
+        } else {
+            tfNazwa.clear();
+            tfIloscBiegow.clear();
+            tfAktualnyBieg.clear();
+            tfObrotySilnika.clear();
+        }
+    }
 
 
 
     @FXML
-    private void initialize() {
-        System.out.println("FXML został poprawnie wczytany.");
-        comboSamochody.getItems().addAll();
+    private void onDodajAuto() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    HelloApplication.class.getResource("auto-adder.fxml")
+            );
+
+            AnchorPane root = fxmlLoader.load();
+            carAddControler autoAdderController = fxmlLoader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Dodawanie Samochodu");
+            stage.setScene(new Scene(root));
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+
+            stage.showAndWait();
+
+            Samochod noweAuto = autoAdderController.getNoweAuto();
+
+            if (noweAuto != null) {
+                dodajAutoDoListy(noweAuto);
+                comboSamochody.getSelectionModel().select(noweAuto);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Błąd");
+            alert.setHeaderText("Nie można załadować formularza.");
+            alert.setContentText("Sprawdź, czy plik auto-adder.fxml istnieje.");
+            alert.showAndWait();
+        }
+    }
+
+    private void wykonajAkcje(Runnable akcja) {
+        if (aktualneAuto != null) {
+            akcja.run();
+            wyswietlDaneAuta(aktualneAuto);
+        } else {
+            System.out.println("Błąd: Nie wybrano żadnego samochodu.");
+        }
     }
 
     @FXML
     public void onZwiekszBieg() {
-        System.out.println("Zwiększ bieg");
+        wykonajAkcje(() -> aktualneAuto.zwiekszBieg());
     }
 
     @FXML
     private void onZmniejszBieg() {
-        System.out.println("Zmniejsz bieg");
+        wykonajAkcje(() -> aktualneAuto.zmniejszBieg());
     }
 
     @FXML
     private void onWcisnijSprzeglo() {
-        System.out.println("Sprzęgło wciśnięte");
+        wykonajAkcje(() -> aktualneAuto.wcisnijSprzeglo());
     }
 
     @FXML
     private void onZwolnijSprzeglo() {
-        System.out.println("Sprzęgło zwolnione");
+        wykonajAkcje(() -> aktualneAuto.zwolnijSprzeglo());
     }
 
     @FXML
     private void onWlaczSilnik() {
-        System.out.println("Włączam silnik");
+        wykonajAkcje(() -> aktualneAuto.wlaczSilnik());
     }
 
     @FXML
     private void onWylaczSilnik() {
-        System.out.println("Wyłączam silnik");
+        wykonajAkcje(() -> aktualneAuto.wylaczSilnik());
     }
 
     @FXML
     private void onWlaczAuto() {
-        System.out.println("Auto włączone");
+        wykonajAkcje(() -> aktualneAuto.wlaczAuto());
     }
 
     @FXML
     private void onWylaczAuto() {
-        System.out.println("Auto wyłączone");
+        wykonajAkcje(() -> aktualneAuto.wylaczAuto());
     }
+
     @FXML
-    private void onDodajAuto() {
-        try {
-            // Użycie FXMLLoader do załadowania nowego ekranu z pliku .fxml
-            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("auto-adder.fxml"));
+    public void onTestPrzesun() {
+        wykonajAkcje(() -> {
 
-            // Załadowanie widoku do Parent
-            AnchorPane root = fxmlLoader.load();
+            double predkosc = aktualneAuto.getAktualnyBieg() * aktualneAuto.getObrotySilnika() / 1000.0;
 
-            // Klasa Stage jako nowe okno
-            Stage stage = new Stage();
-            stage.setTitle("Dodawanie Samochodu");
-            stage.setScene(new Scene(root));
-
-            // Opcjonalnie: Ustawienie modalności (blokuje interakcję z głównym oknem)
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-
-            stage.showAndWait(); // Pokazanie okna i czekanie na jego zamknięcie
-
-            // Opcjonalnie: Odświeżenie comboSamochody po powrocie z okna
-            // (Wymagałoby to przekazania referencji lub użycia wzorca Observer)
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Opcjonalny komunikat błędu dla użytkownika
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Błąd");
-            alert.setHeaderText("Nie można załadować formularza.");
-            alert.setContentText("Sprawdź, czy plik data-input-view.fxml istnieje.");
-            alert.showAndWait();
-        }
+            aktualneAuto.przesun(10, 0);
+        });
     }
 }
-
