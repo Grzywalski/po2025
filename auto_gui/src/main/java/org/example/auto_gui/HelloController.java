@@ -113,24 +113,6 @@ public class HelloController implements Listener {
         }
 
     }
-    private void wyswietlDaneAuta(Samochod auto) {
-        if (auto != null) {
-            tfNazwa.setText(auto.getNazwa());
-            tfIloscBiegow.setText(String.valueOf(auto.getSkrzynia().getIloscBiegow()));
-            tfAktualnyBieg.setText(String.valueOf(auto.getSkrzynia().getAktualnyBieg()));
-            tfObrotySilnika.setText(String.valueOf(auto.getSilnik().getObroty()));
-            btnWcisnijSprzeglo.setText(auto.getSprzeglo().isWcisniete() ? "Sprzęgło (WCIŚNIĘTE)" : "Wciśnij Sprzęgło");
-            btnWlaczSilnik.setText(auto.getSilnik().isWlaczony() ? "Silnik (WŁĄCZONY)" : "Włącz Silnik");
-            btnWlaczAuto.setText(auto.is_auto_on ? "auto (Włączone)" : "Włącz auto");
-
-        } else {
-            tfNazwa.clear();
-            tfIloscBiegow.clear();
-            tfAktualnyBieg.clear();
-            tfObrotySilnika.clear();
-        }
-    }
-
 
 
     @FXML
@@ -203,7 +185,6 @@ public class HelloController implements Listener {
     private void wykonajAkcje(Runnable akcja) {
         if (aktualneAuto != null) {
             akcja.run();
-            wyswietlDaneAuta(aktualneAuto);
         } else {
             System.out.println("Błąd: Nie wybrano żadnego samochodu.");
         }
@@ -212,59 +193,50 @@ public class HelloController implements Listener {
     @FXML
     public void onZwiekszBieg() {
         wykonajAkcje(() -> aktualneAuto.zwiekszBieg());
-        wyswietlDaneAuta(aktualneAuto);
     }
     @FXML
     public void onZwiekszObroty(){
         wykonajAkcje(()->aktualneAuto.silnik.zwiekszObroty(200));
-        wyswietlDaneAuta(aktualneAuto);
     }
     @FXML
     public void onZmniejszObroty(){
         wykonajAkcje(()->aktualneAuto.silnik.zmniejszObroty(200));
-        wyswietlDaneAuta(aktualneAuto);
+
     }
 
     @FXML
     private void onZmniejszBieg() {
         wykonajAkcje(() -> aktualneAuto.zmniejszBieg());
-        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWcisnijSprzeglo() {
         wykonajAkcje(() -> aktualneAuto.wcisnijSprzeglo());
-        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onZwolnijSprzeglo() {
         wykonajAkcje(() -> aktualneAuto.zwolnijSprzeglo());
-        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWlaczSilnik() {
         wykonajAkcje(() -> aktualneAuto.wlaczSilnik());
-        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWylaczSilnik() {
         wykonajAkcje(() -> aktualneAuto.wylaczSilnik());
-        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWlaczAuto() {
         wykonajAkcje(() -> aktualneAuto.wlaczAuto());
-        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWylaczAuto() {
         wykonajAkcje(() -> aktualneAuto.wylaczAuto());
-        wyswietlDaneAuta(aktualneAuto);
     }
     public void zatrzymajWszystkieSamochody() {
         for (Samochod auto : listaSamochodow) {
