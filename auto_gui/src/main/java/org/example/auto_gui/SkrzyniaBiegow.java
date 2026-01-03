@@ -32,6 +32,6 @@ public class SkrzyniaBiegow extends Komponent {
 
     SkrzyniaBiegow(int maxBiegow) {
         this.iloscBiegow = maxBiegow;
-        this.aktualnyBieg = 0;
+        this.aktualnyBieg = 1;
     }
 }

@@ -16,11 +16,18 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1200, 600);
         stage.setTitle("symulator auta");
         stage.setScene(scene);
+        HelloController controller = fxmlLoader.getController();
+
+        stage.setOnCloseRequest(event -> {
+            controller.zatrzymajWszystkieSamochody();
+        });
         stage.show();
+
     }
 
     public static void main(String[] args) {
         launch();
+
     }
 
 }

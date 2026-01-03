@@ -1,5 +1,6 @@
 package org.example.auto_gui;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.example.auto_gui.carAddControler;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HelloController {
+public class HelloController implements Listener {
     @FXML private Pane canvasPane;
 
     private Image carImage;
@@ -35,6 +36,9 @@ public class HelloController {
     @FXML private Button btnWlaczAuto;
     @FXML private Button btnWylaczAuto;
     @FXML private Button btnDodajAuto;
+    @FXML private Button btndodajGazu;
+    @FXML private Button btnHamuj;
+    @FXML private Button btnUsunAuto;
 
     @FXML private ComboBox<Samochod> comboSamochody;
     @FXML
@@ -43,23 +47,17 @@ public class HelloController {
 
         comboSamochody.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
 
-            if (oldVal != null) {
-
-                oldVal.widokSamochodu.setStyle("-fx-border-color: gray; -fx-border-width: 1;");
-            }
-
-
             if (newVal != null) {
+                if (aktualneAuto != null) aktualneAuto.removeListener(this);
                 aktualneAuto = newVal;
-                newVal.widokSamochodu.setStyle("-fx-border-color: gold; -fx-border-width: 3;");
-                newVal.widokSamochodu.setVisible(true);
-
-                wyswietlDaneAuta(aktualneAuto);
+                aktualneAuto.addListener(this);
+                update();
             }
         });
 
         Samochod domyslneAuto = new Samochod("Domyślna Toyota", 5);
         dodajAutoDoListy(domyslneAuto);
+        domyslneAuto.addListener(this);
         comboSamochody.getSelectionModel().selectFirst();
         try {
             carImage = new Image(HelloApplication.class.getResource("car.png").toExternalForm());
@@ -67,7 +65,43 @@ public class HelloController {
             System.err.println("Błąd ładowania obrazu car.jpg: " + e.getMessage());
             carImage = null;
         }
+        canvasPane.setOnMouseClicked(e -> {
+            if (aktualneAuto == null) {
+                System.out.println("Nie wybrano auta");
+                return;
+            }
+            double x = e.getX();
+            double y = e.getY();
+            aktualneAuto.jedzDo(new Pozycja(x,y));
+            System.out.println(x + " " + y);
+        });
+
+
     }
+    @Override
+    public void update() {
+        if (aktualneAuto != null) {
+            Platform.runLater(() -> {
+                tfNazwa.setText(aktualneAuto.getNazwa());
+                tfIloscBiegow.setText(String.valueOf(aktualneAuto.getSkrzynia().getIloscBiegow()));
+                tfAktualnyBieg.setText(String.valueOf(aktualneAuto.getSkrzynia().getAktualnyBieg()));
+                tfObrotySilnika.setText(String.valueOf(aktualneAuto.getSilnik().getObroty()));
+                btnWcisnijSprzeglo.setText(aktualneAuto.getSprzeglo().stanSprzegla() ? "Sprzęgło (WCIŚNIĘTE)" : "Wciśnij Sprzęgło");
+                btnWlaczSilnik.setText(aktualneAuto.getSilnik().isWlaczony() ? "Silnik (WŁĄCZONY)" : "Włącz Silnik");
+                btnWlaczAuto.setText(aktualneAuto.isAutoOn() ? "Auto (Włączone)" : "Włącz Auto");
+                aktualneAuto.aktualizujWidokNaPlanszy();
+            });
+        }else{
+            tfNazwa.clear();
+            tfIloscBiegow.clear();
+            tfAktualnyBieg.clear();
+            tfObrotySilnika.clear();
+            btnWcisnijSprzeglo.setText("Wciśnij Sprzęgło");
+            btnWlaczSilnik.setText("Włącz Silnik");
+            btnWlaczAuto.setText("Włącz Auto");
+        }
+    }
+
 
     private void dodajAutoDoListy(Samochod auto) {
         listaSamochodow.add(auto);
@@ -75,7 +109,9 @@ public class HelloController {
         if (canvasPane != null && auto.widokSamochodu != null) {
             canvasPane.getChildren().add(auto.widokSamochodu);
             auto.widokSamochodu.setVisible(true);
+            auto.addListener(() -> auto.aktualizujWidokNaPlanszy());
         }
+
     }
     private void wyswietlDaneAuta(Samochod auto) {
         if (auto != null) {
@@ -85,6 +121,7 @@ public class HelloController {
             tfObrotySilnika.setText(String.valueOf(auto.getSilnik().getObroty()));
             btnWcisnijSprzeglo.setText(auto.getSprzeglo().isWcisniete() ? "Sprzęgło (WCIŚNIĘTE)" : "Wciśnij Sprzęgło");
             btnWlaczSilnik.setText(auto.getSilnik().isWlaczony() ? "Silnik (WŁĄCZONY)" : "Włącz Silnik");
+            btnWlaczAuto.setText(auto.is_auto_on ? "auto (Włączone)" : "Włącz auto");
 
         } else {
             tfNazwa.clear();
@@ -114,9 +151,9 @@ public class HelloController {
             stage.showAndWait();
 
             Samochod noweAuto = autoAdderController.getNoweAuto();
-
             if (noweAuto != null) {
                 dodajAutoDoListy(noweAuto);
+                noweAuto.addListener(this);
                 comboSamochody.getSelectionModel().select(noweAuto);
             }
 
@@ -128,6 +165,39 @@ public class HelloController {
             alert.setContentText("Sprawdź, czy plik auto-adder.fxml istnieje.");
             alert.showAndWait();
         }
+    }
+    @FXML
+    private void onUsunAuto(){
+        if (aktualneAuto == null) {
+            System.out.println("Brak auta do usunięcia");
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Usuń auto");
+        alert.setHeaderText("Czy na pewno chcesz usunąć auto?");
+        alert.setContentText(aktualneAuto.getNazwa());
+
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            return;
+        }
+
+        aktualneAuto.usunAuto();
+        canvasPane.getChildren().remove(aktualneAuto.widokSamochodu);
+
+        listaSamochodow.remove(aktualneAuto);
+        comboSamochody.getItems().remove(aktualneAuto);
+
+        if (!listaSamochodow.isEmpty()) {
+            Samochod nowe = listaSamochodow.get(0);
+            comboSamochody.getSelectionModel().select(nowe);
+            aktualneAuto = nowe;
+            aktualneAuto.addListener(this);
+            update();
+        } else {
+            aktualneAuto = null;
+            update();
+        }
+
     }
 
     private void wykonajAkcje(Runnable akcja) {
@@ -142,50 +212,64 @@ public class HelloController {
     @FXML
     public void onZwiekszBieg() {
         wykonajAkcje(() -> aktualneAuto.zwiekszBieg());
+        wyswietlDaneAuta(aktualneAuto);
+    }
+    @FXML
+    public void onZwiekszObroty(){
+        wykonajAkcje(()->aktualneAuto.silnik.zwiekszObroty(200));
+        wyswietlDaneAuta(aktualneAuto);
+    }
+    @FXML
+    public void onZmniejszObroty(){
+        wykonajAkcje(()->aktualneAuto.silnik.zmniejszObroty(200));
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onZmniejszBieg() {
         wykonajAkcje(() -> aktualneAuto.zmniejszBieg());
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWcisnijSprzeglo() {
         wykonajAkcje(() -> aktualneAuto.wcisnijSprzeglo());
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onZwolnijSprzeglo() {
         wykonajAkcje(() -> aktualneAuto.zwolnijSprzeglo());
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWlaczSilnik() {
         wykonajAkcje(() -> aktualneAuto.wlaczSilnik());
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWylaczSilnik() {
         wykonajAkcje(() -> aktualneAuto.wylaczSilnik());
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWlaczAuto() {
         wykonajAkcje(() -> aktualneAuto.wlaczAuto());
+        wyswietlDaneAuta(aktualneAuto);
     }
 
     @FXML
     private void onWylaczAuto() {
         wykonajAkcje(() -> aktualneAuto.wylaczAuto());
+        wyswietlDaneAuta(aktualneAuto);
+    }
+    public void zatrzymajWszystkieSamochody() {
+        for (Samochod auto : listaSamochodow) {
+            auto.usunAuto();
+        }
     }
 
-    @FXML
-    public void onTestPrzesun() {
-        wykonajAkcje(() -> {
-
-            double predkosc = aktualneAuto.getAktualnyBieg() * aktualneAuto.getObrotySilnika() / 1000.0;
-
-            aktualneAuto.przesun(10, 0);
-        });
-    }
 }
