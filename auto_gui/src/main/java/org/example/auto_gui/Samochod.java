@@ -20,6 +20,7 @@ public class Samochod extends Thread{
     private static final Image CAR_IMAGE;
     private static final Random RANDOM = new Random();
     private final List<Listener> listeners = new ArrayList<>();
+    boolean SCT;
 
     static {
         Image imageToLoad;
@@ -211,9 +212,9 @@ public class Samochod extends Thread{
 
 
 
-    public Samochod(String nazwa, int iloscBiegow) {
+    public Samochod(String nazwa, int iloscBiegow,int iloscKoni,boolean SCT) {
         this.Nazwa = nazwa;
-        this.silnik = new Silnik();
+        this.silnik = new Silnik(iloscKoni);
         this.skrzynia = new SkrzyniaBiegow(iloscBiegow);
         this.sprzeglo = new Sprzeglo();
         this.is_auto_on = false;
@@ -222,6 +223,7 @@ public class Samochod extends Thread{
         this.widokSamochodu.setFitWidth(160);
         this.widokSamochodu.setFitHeight(160);
         this.autoExists = true;
+        this.SCT = SCT;
 
         aktualizujWidokNaPlanszy();
         start();

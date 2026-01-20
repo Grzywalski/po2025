@@ -25,6 +25,9 @@
                 <Label text="Obroty silnika:" />
                 <TextField fx:id="tfObrotySilnika" editable="false" />
 
+                <Label text="konie mechaniczne:" />
+                <TextField fx:id="tfKonie" editable="false" />
+
                 <Separator />
                 <Label text="STEROWANIE" style="-fx-font-size:16; -fx-font-weight:bold;"/>
                 <HBox spacing="10">

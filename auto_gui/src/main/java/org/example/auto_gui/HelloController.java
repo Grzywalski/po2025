@@ -26,6 +26,7 @@ public class HelloController implements Listener {
     @FXML private TextField tfNazwa;
     @FXML private TextField tfIloscBiegow;
     @FXML private TextField tfAktualnyBieg;
+    @FXML private TextField tfKonie;
     @FXML private TextField tfObrotySilnika;
     @FXML private Button btnZwiekszBieg;
     @FXML private Button btnZmniejszBieg;
@@ -55,7 +56,7 @@ public class HelloController implements Listener {
             }
         });
 
-        Samochod domyslneAuto = new Samochod("Domyślna Toyota", 5);
+        Samochod domyslneAuto = new Samochod("Domyślna Toyota", 5,200,true);
         dodajAutoDoListy(domyslneAuto);
         domyslneAuto.addListener(this);
         comboSamochody.getSelectionModel().selectFirst();
@@ -85,6 +86,7 @@ public class HelloController implements Listener {
                 tfNazwa.setText(aktualneAuto.getNazwa());
                 tfIloscBiegow.setText(String.valueOf(aktualneAuto.getSkrzynia().getIloscBiegow()));
                 tfAktualnyBieg.setText(String.valueOf(aktualneAuto.getSkrzynia().getAktualnyBieg()));
+                tfKonie.setText(String.valueOf(aktualneAuto.getSilnik().getKonie()));
                 tfObrotySilnika.setText(String.valueOf(aktualneAuto.getSilnik().getObroty()));
                 btnWcisnijSprzeglo.setText(aktualneAuto.getSprzeglo().stanSprzegla() ? "Sprzęgło (WCIŚNIĘTE)" : "Wciśnij Sprzęgło");
                 btnWlaczSilnik.setText(aktualneAuto.getSilnik().isWlaczony() ? "Silnik (WŁĄCZONY)" : "Włącz Silnik");
@@ -96,6 +98,7 @@ public class HelloController implements Listener {
             tfIloscBiegow.clear();
             tfAktualnyBieg.clear();
             tfObrotySilnika.clear();
+            tfKonie.clear();
             btnWcisnijSprzeglo.setText("Wciśnij Sprzęgło");
             btnWlaczSilnik.setText("Włącz Silnik");
             btnWlaczAuto.setText("Włącz Auto");

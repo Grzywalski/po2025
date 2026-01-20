@@ -5,6 +5,7 @@ public class Silnik extends Komponent {
     final int maxObroty = 10000;
     double obroty;
     private boolean wlaczony;
+    Integer iloscKoni;
 
 
     public void uruchom() {
@@ -49,7 +50,7 @@ public class Silnik extends Komponent {
         }
     }
 
-
+    public int getKonie(){return this.iloscKoni;}
     public double getObroty() {
         return this.obroty;
     }
@@ -59,8 +60,9 @@ public class Silnik extends Komponent {
         return this.wlaczony;
     }
 
-    Silnik() {
+    Silnik(Integer iloscKoni) {
         this.obroty = 0;
         this.wlaczony = false;
+        this.iloscKoni = iloscKoni;
     }
 }

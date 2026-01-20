@@ -13,7 +13,8 @@
 
         <TextField fx:id="inputNazwa" promptText="Nazwa (np. Toyota Corolla)"/>
         <TextField fx:id="inputMaxBiegi" promptText="Liczba Biegów (np. 6)"/>
-
+        <TextField fx:id="inputKonie" promptText="liczba koni mechanicznych"/>
+        <ComboBox fx:id="inputSCT" prefWidth="220" />
         <Label fx:id="validationLabel"
                text=""
                style="-fx-text-fill: red; -fx-font-weight: bold;"/>
